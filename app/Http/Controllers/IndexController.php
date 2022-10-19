@@ -36,7 +36,6 @@ class IndexController extends Controller implements IndexIntreface
                 ->orderBy('sort')
                 ->take(5)->get()),
             'sale' => app('images')->images(MainSale::all()->take(1)),
-
         ];
         return response()->json($return, 200);
     }

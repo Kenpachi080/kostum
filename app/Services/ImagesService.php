@@ -57,6 +57,28 @@ class ImagesService extends Facade
         return $this->url . json_decode($file)[0]->download_link;
     }
 
+    public function response($item, $type = 0)
+    {
+        if ($type == 1) {
+            for ($i = 1; $i <= count($item); $i++) {
+                $item[$i] = $this->rules($item[$i]);
+            }
+        } else {
+            $item = $this->rules($item);
+        }
+
+        return $item;
+    }
+
+    public function rules($item)
+    {
+        if ($item->image) {
+            $item->image = $this->url . $item->image;
+        }
+
+        return $item;
+    }
+
 }
 
 ?>

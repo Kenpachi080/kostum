@@ -1,10 +1,9 @@
 <?php
 
-use App\Models\User as User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\DatabaseController;
+use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\AuthController as AuthController;
-use App\Http\Controllers\IndexController as IndexController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +28,14 @@ Route::group(['prefix' => 'auth', 'middleware' => "api_auth"], function () {
     Route::post('/change', [AuthController::class, 'change'])->name('change');
     Route::post('/view', [AuthController::class, 'view'])->name('authview');
 });
+
+Route::group(['prefix' => 'table'], function () {
+    Route::get('/', [DatabaseController::class, 'index']);
+    Route::get('/{table}', [DatabaseController::class, 'show']);
+    Route::get('/{table}/{id}', [DatabaseController::class, 'showOnly']);
+    Route::post('/{table}/create/', [DatabaseController::class, '']);
+    Route::put('/{table}/update/{id}');
+    Route::delete('/{table}/delete/{id}');
+});
+
+// route create:  POST /admin/{table->slug}

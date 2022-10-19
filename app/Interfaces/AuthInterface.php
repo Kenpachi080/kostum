@@ -53,6 +53,7 @@ interface AuthInterface
      * )
      */
     public function register(RegisterRequest $request): JsonResponse;
+
     /**
      * @OA\Post(
      * path="/api/auth/login",
@@ -126,7 +127,7 @@ interface AuthInterface
      *                type="string",
      *               example="Пароль был успешно изменен",
      *              ),
-     *     ),
+     *          ),
      *        )
      *     )
      * )
@@ -172,7 +173,7 @@ interface AuthInterface
      *                type="string",
      *               example="Данные успешно были изменены",
      *              ),
-     *     ),
+     *          ),
      *        )
      *     )
      * )

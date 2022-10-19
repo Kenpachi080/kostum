@@ -21,7 +21,7 @@ interface IndexIntreface
 
     /**
      * @OA\Get(path="/api/main",
-     *   tags={"Лицевые блоки"},
+     *   tags={"Главная страница"},
      *   operationId="main",
      *   summary="Главная страница",
      * @OA\Response(
