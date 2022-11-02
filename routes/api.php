@@ -30,12 +30,13 @@ Route::group(['prefix' => 'auth', 'middleware' => "api_auth"], function () {
 });
 
 Route::group(['prefix' => 'table'], function () {
-    Route::get('/', [DatabaseController::class, 'index']);
-    Route::get('/{table}', [DatabaseController::class, 'show']);
-    Route::get('/{table}/{id}', [DatabaseController::class, 'showOnly']);
-    Route::post('/{table}/create/', [DatabaseController::class, '']);
-    Route::put('/{table}/update/{id}');
-    Route::delete('/{table}/delete/{id}');
+    Route::get('/', [DatabaseController::class, 'index']); // показать все таблицы
+    Route::get('/{table}', [DatabaseController::class, 'show']); // показать таблицу
+    Route::get('/{table}/{id}', [DatabaseController::class, 'showOnly']); // показать отдельную запись в таблице
+    Route::post('/{table}', [DatabaseController::class, 'create']); // создать запись в таблице
+    Route::post('/{table}/rules', [DatabaseController::class, 'create']); // создать правила для таблицы
+    Route::put('/{table}/{id}', [DatabaseController::class, 'update']); // обновить запись в таблице
+    Route::delete('/{table}/{id}', [DatabaseController::class, 'delete']); // удалить записть в таблице
 });
 
 // route create:  POST /admin/{table->slug}

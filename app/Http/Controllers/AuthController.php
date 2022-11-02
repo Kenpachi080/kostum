@@ -117,8 +117,9 @@ class AuthController extends Controller implements AuthInterface
         if ($user->code != $request->code) {
             return response()->json(['message' => 'Не правильный код'], 404);
         }
-        $user->password = bcrypt($request->password);
+
         $user->code = '';
+        $user->password = bcrypt($request->password);
         $user->api_token = Str::random(60);
         $user->save();
         $response = [

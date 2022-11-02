@@ -30,7 +30,7 @@ class ImagesService extends Facade
     {
         if ($item) {
             foreach ($item as $block) {
-                if ($block->image) {
+                if (isset($block->image)) {
                     $block->image = $this->url . $block->image;
                 }
             }

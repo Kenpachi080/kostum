@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\TableRules;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use TCG\Voyager\Database\Schema\SchemaManager;
 use TCG\Voyager\Facades\Voyager;
@@ -67,19 +69,112 @@ class DatabaseServices
                 }
             }
         }
-        $db = app('images')->images(DB::table($table));
+        $db = DB::table($table);
         if (is_null($id)) {
-            $db->get();
+            $db = $db->get();
         } else {
-            $db->where('id', $id)->first();
+            $db = $db->where('id', $id)->first();
         }
         $response = [
             'type' => collect(SchemaManager::describeTable($table))->merge($additional_attributes),
-            'date' => $db
+            'date' => app('images')->images($db),
         ];
 
         return $response;
     }
 
+    public function create($table, $date)
+    {
+        try {
+            $this->exceptionDate($date);
+        } catch (\Exception $exception) {
+            return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
+        }
+        DB::table($table)->insert($this->formatDate($table, $date));
 
+        return ['message' => 'Запись была создана', 'code' => 201];
+    }
+
+    public function update($table, $id, $date)
+    {
+        try {
+            $this->exceptionDate($date);
+            $db = $this->exceptionFind($id, $table);
+        } catch (\Exception $exception) {
+            return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
+        }
+        $db->update($this->formatDate($table, $date));
+
+        return ['message' => 'Запись обновлена', 'code' => 202];
+    }
+
+    public function delete($table, $id, $date)
+    {
+        try {
+            $this->exceptionDate($date);
+            $db = $this->exceptionFind($id, $table);
+        } catch (\Exception $exception) {
+            return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
+        }
+        $db->delete();
+
+        return ['message' => 'Запись удалена', 'code' => 202];
+    }
+
+    public function exceptionDate($date)
+    {
+        if (gettype($date) != 'array') {
+            throw new \Exception('Не тот тип данных', 409);
+        }
+    }
+
+    public function exceptionFind($id, $table)
+    {
+        $db = DB::table($table)
+            ->find($id);
+        if (!$db) {
+            throw new \Exception('Не найдена запись', 404);
+        }
+
+        return $db;
+    }
+
+    public function formatDate(string $table, array $date)
+    {
+        $insertDate = [];
+        foreach ($date as $key => $value) {
+            $type = TableRules::query()
+                ->where('table', $table)
+                ->where('field', $key)
+                ->first();
+            switch ($type) {
+                case 'file':
+                    $file = Storage::put("$table/", $value);
+                    $insertDate[$key] = $file;
+                    break;
+                case 'multifile':
+                    $files = [];
+                    foreach ($value as $fileValue) {
+                        $files[] = Storage::put("$table/", $fileValue);
+                    }
+                    $insertDate[$key] = json_encode($files);
+                    break;
+                default:
+                    $insertDate[$key] = $value;
+                    break;
+            }
+        }
+
+        return $insertDate;
+    }
+
+    public function rules($table, $requests)
+    {
+        foreach ($requests as $key => $value) {
+            TableRules::query()
+                ->updateOrCreate(['table' => $table, 'field' => $key], ['type' => $value]);
+        }
+
+        return ['message' => 'Правила обновлены', 'code' => 201];
+    }
 }
