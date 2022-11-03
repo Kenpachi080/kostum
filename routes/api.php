@@ -33,8 +33,8 @@ Route::group(['prefix' => 'table'], function () {
     Route::get('/', [DatabaseController::class, 'index']); // показать все таблицы
     Route::get('/{table}', [DatabaseController::class, 'show']); // показать таблицу
     Route::get('/{table}/{id}', [DatabaseController::class, 'showOnly']); // показать отдельную запись в таблице
+    Route::post('/rules/{table}', [DatabaseController::class, 'rules']); // создать правила для таблицы
     Route::post('/{table}', [DatabaseController::class, 'create']); // создать запись в таблице
-    Route::post('/{table}/rules', [DatabaseController::class, 'create']); // создать правила для таблицы
     Route::put('/{table}/{id}', [DatabaseController::class, 'update']); // обновить запись в таблице
     Route::delete('/{table}/{id}', [DatabaseController::class, 'delete']); // удалить записть в таблице
 });

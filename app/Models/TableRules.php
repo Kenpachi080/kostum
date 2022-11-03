@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TableRules extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+    protected $fillable = ['table', 'field', 'type'];
 }

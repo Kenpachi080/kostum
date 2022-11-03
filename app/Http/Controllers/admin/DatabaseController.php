@@ -40,6 +40,6 @@ class DatabaseController extends Controller
     public function rules($table): JsonResponse
     {
         $date = app('databases')->rules($table, request()->all());
-        return response()->json(['message' => $date['message'], $date['code']]);
+        return response()->json(['message' => $date['message']], $date['code']);
     }
 }

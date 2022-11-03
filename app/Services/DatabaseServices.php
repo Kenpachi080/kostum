@@ -28,6 +28,7 @@ class DatabaseServices
 
     ];
 
+
     public function index()
     {
         $dataTypes = Voyager::model('DataType')->select('id', 'name', 'slug')->get()->keyBy('name')->toArray();
@@ -147,15 +148,17 @@ class DatabaseServices
                 ->where('table', $table)
                 ->where('field', $key)
                 ->first();
-            switch ($type) {
+            switch ($type->type) {
                 case 'file':
-                    $file = Storage::put("$table/", $value);
+                    $fileName = Storage::put("public/$table", $value);
+                    $file = str_replace('public/', '', $fileName);
                     $insertDate[$key] = $file;
                     break;
                 case 'multifile':
                     $files = [];
                     foreach ($value as $fileValue) {
-                        $files[] = Storage::put("$table/", $fileValue);
+                        $fileName = Storage::put("public/$table", $fileValue);
+                        $files[] = str_replace('public/', '', $fileName);
                     }
                     $insertDate[$key] = json_encode($files);
                     break;
@@ -164,7 +167,6 @@ class DatabaseServices
                     break;
             }
         }
-
         return $insertDate;
     }
 
