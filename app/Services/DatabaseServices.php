@@ -88,10 +88,10 @@ class DatabaseServices
     {
         try {
             $this->exceptionDate($date);
+            DB::table($table)->insert($this->formatDate($table, $date));
         } catch (\Exception $exception) {
             return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
-        DB::table($table)->insert($this->formatDate($table, $date));
 
         return ['message' => 'Запись была создана', 'code' => 201];
     }
@@ -101,10 +101,10 @@ class DatabaseServices
         try {
             $this->exceptionDate($date);
             $db = $this->exceptionFind($id, $table);
+            $db->update($this->formatDate($table, $date));
         } catch (\Exception $exception) {
             return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
-        $db->update($this->formatDate($table, $date));
 
         return ['message' => 'Запись обновлена', 'code' => 202];
     }
@@ -163,6 +163,9 @@ class DatabaseServices
                     $insertDate[$key] = json_encode($files);
                     break;
                 default:
+                    if (gettype($value) != 'string') {
+                        throw new \Exception('Видимо вы забыли указать правила для этой таблицы, для строки пришел: '.gettype($value).'', 409);
+                    }
                     $insertDate[$key] = $value;
                     break;
             }
