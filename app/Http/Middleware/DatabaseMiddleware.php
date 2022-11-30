@@ -18,7 +18,7 @@ class DatabaseMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $token = request()->header('api_token');
+        $token = request()->header('Authorization');
         dd($token);
         if (request()->header('api_token') !== null) {
 
