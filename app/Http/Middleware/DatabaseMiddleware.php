@@ -18,9 +18,10 @@ class DatabaseMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $token = request()->header('api_token');
+        dd($token);
         if (request()->header('api_token') !== null) {
-            $token = request()->header('api_token');
-            dd($token);
+
             $user = User::query()->where('api_token', $token)->first();
             if (isset($user) && $user->role_id == 1 ) {
                 Auth::login($user);
