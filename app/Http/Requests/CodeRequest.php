@@ -24,8 +24,7 @@ class CodeRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => '',
-            'email' => '',
+            'phone' => 'required',
             'code' => 'required',
         ];
     }

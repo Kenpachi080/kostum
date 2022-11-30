@@ -24,8 +24,7 @@ class ForgotRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => '',
-            'phone' => '',
+            'phone' => 'required',
         ];
     }
 }

@@ -4,8 +4,7 @@ namespace App\Providers;
 
 use App\Services\DatabaseServices;
 use App\Services\ImagesService;
-use App\Services\PageService;
-use Illuminate\Support\Facades\App;
+use App\Services\ItemService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
             return new DatabaseServices();
         });
 
-        $this->app->bind('pages', function () {
-            return new PageService();
+        $this->app->bind('items', function () {
+            return new ItemService();
         });
     }
 

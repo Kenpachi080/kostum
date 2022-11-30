@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             ->where('id', '=', $this->resource)
             ->first();
         $user->avatar = app('images')->image($user->avatar);
+        $user->address = $user->address()->get();
         return $user;
     }
 }

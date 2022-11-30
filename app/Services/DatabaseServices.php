@@ -2,31 +2,17 @@
 
 namespace App\Services;
 
+use App\Helpers\DatabaseHelper;
 use App\Models\TableRules;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use TCG\Voyager\Database\Schema\SchemaManager;
 use TCG\Voyager\Facades\Voyager;
 
-class DatabaseServices
+class DatabaseServices extends DatabaseHelper
 {
-    public $skip = [
-        '',
-        'data_rows',
-        'data_types',
-        'failed_jobs',
-        'migrations',
-        'password_resets',
-        'permission_role',
-        'permissions',
-        'personal_access_tokens',
-        'roles',
-        'settings',
-        'translations',
-        'user_roles',
-
-    ];
 
 
     public function index()
@@ -46,12 +32,12 @@ class DatabaseServices
 
         $table = table(SchemaManager::listTableNames(), $this->skip);
         $tables = array_map(function ($table) use ($dataTypes) {
+            $displayName = DB::table('data_types')->where('name', $table)->first();
             $table = Str::replaceFirst(DB::getTablePrefix(), '', $table);
             $table = [
-                'prefix' => DB::getTablePrefix(),
                 'name' => $table,
+                'display_name' => $displayName->display_name ?? null,
                 'slug' => $dataTypes[$table]['slug'] ?? null,
-                'dataTypeId' => $dataTypes[$table]['id'] ?? null,
             ];
             return (object)$table;
         }, $table);
@@ -70,17 +56,18 @@ class DatabaseServices
                 }
             }
         }
+
         $db = DB::table($table);
         if (is_null($id)) {
             $db = $db->get();
         } else {
             $db = $db->where('id', $id)->first();
         }
+
         $response = [
             'type' => collect(SchemaManager::describeTable($table))->merge($additional_attributes),
             'date' => app('images')->images($db),
         ];
-
         return $response;
     }
 
@@ -88,96 +75,50 @@ class DatabaseServices
     {
         try {
             $this->exceptionDate($date);
-            DB::table($table)->insert($this->formatDate($table, $date));
+            $row = DB::table($table)->insert($this->formatDate($table, $date));
         } catch (\Exception $exception) {
             return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
 
-        return ['message' => 'Запись была создана', 'code' => 201];
+        return ['message' => $row, 'code' => 201];
     }
 
-    public function update($table, $id, $date)
+    public function update($table, $id, $date): array
     {
         try {
             $this->exceptionDate($date);
             $db = $this->exceptionFind($id, $table);
-            $db->update($this->formatDate($table, $date));
+            $date = $this->formatDate($table, $date);
+            $row = $db->update($date);
         } catch (\Exception $exception) {
             return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
 
-        return ['message' => 'Запись обновлена', 'code' => 202];
+        return ['message' => $row, 'code' => 202];
     }
 
-    public function delete($table, $id, $date)
+    public function delete($table, $id, $date): array
     {
         try {
             $this->exceptionDate($date);
             $db = $this->exceptionFind($id, $table);
+            $db->delete();
         } catch (\Exception $exception) {
             return ['message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
-        $db->delete();
 
         return ['message' => 'Запись удалена', 'code' => 202];
     }
 
-    public function exceptionDate($date)
+    public function rules($table, $request): array
     {
-        if (gettype($date) != 'array') {
-            throw new \Exception('Не тот тип данных', 409);
-        }
-    }
-
-    public function exceptionFind($id, $table)
-    {
-        $db = DB::table($table)
-            ->find($id);
-        if (!$db) {
-            throw new \Exception('Не найдена запись', 404);
-        }
-
-        return $db;
-    }
-
-    public function formatDate(string $table, array $date)
-    {
-        $insertDate = [];
-        foreach ($date as $key => $value) {
-            $type = TableRules::query()
-                ->where('table', $table)
-                ->where('field', $key)
-                ->first();
-            switch ($type->type) {
-                case 'file':
-                    $fileName = Storage::put("public/$table", $value);
-                    $file = str_replace('public/', '', $fileName);
-                    $insertDate[$key] = $file;
-                    break;
-                case 'multifile':
-                    $files = [];
-                    foreach ($value as $fileValue) {
-                        $fileName = Storage::put("public/$table", $fileValue);
-                        $files[] = str_replace('public/', '', $fileName);
-                    }
-                    $insertDate[$key] = json_encode($files);
-                    break;
-                default:
-                    if (gettype($value) != 'string') {
-                        throw new \Exception('Видимо вы забыли указать правила для этой таблицы, для строки пришел: '.gettype($value).'', 409);
-                    }
-                    $insertDate[$key] = $value;
-                    break;
+        foreach ($request as $key => $value) {
+            if ($key == 'table_name') {
+                $rules = DB::table('data_types')->updateOrInsert(['name' => $table, 'slug' => Str::slug($table)], ['display_name' => $value]);
             }
-        }
-        return $insertDate;
-    }
-
-    public function rules($table, $requests)
-    {
-        foreach ($requests as $key => $value) {
-            TableRules::query()
+            $rules = TableRules::query()
                 ->updateOrCreate(['table' => $table, 'field' => $key], ['type' => $value]);
+
         }
 
         return ['message' => 'Правила обновлены', 'code' => 201];

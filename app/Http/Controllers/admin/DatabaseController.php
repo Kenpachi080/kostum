@@ -4,7 +4,9 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Request;
+use Psy\Util\Json;
 
 class DatabaseController extends Controller
 {
@@ -31,13 +33,17 @@ class DatabaseController extends Controller
         return response()->json(['message' => $date['message']], $date['code']);
     }
 
-    public function update($table, $id): JsonResponse
+    public function update($table, $id, Request $request): JsonResponse
     {
         $date = app('databases')->update($table, $id, request()->all());
-        return response()->json(['message' => $date['message'], $date['code']]);
+        return response()->json(['message' => $date['message']], $date['code']);
     }
 
-    public function rules($table): JsonResponse
+    public function delete($table, $id, Request $request): JsonResponse {
+        $date = app('databases')->delete($table, $id, request()->all());
+        return response()->json(['message' => $date['message']], $date['code']);
+    }
+    public function rules($table, Request $request): JsonResponse
     {
         $date = app('databases')->rules($table, request()->all());
         return response()->json(['message' => $date['message']], $date['code']);

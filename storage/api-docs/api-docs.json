@@ -6,6 +6,162 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/auth/address": {
+            "post": {
+                "tags": [
+                    "Адреса"
+                ],
+                "summary": "Добавить адресс",
+                "description": "Добавить адресс",
+                "operationId": "createAddress",
+                "parameters": [
+                    {
+                        "name": "api_token",
+                        "in": "header",
+                        "description": "Токен авторизации(api_token)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Апи Токен",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "city, street, house"
+                                ],
+                                "properties": {
+                                    "city": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123"
+                                    },
+                                    "house": {
+                                        "type": "integer",
+                                        "format": "string",
+                                        "example": "321"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "CallBack с данными",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/address/{id}": {
+            "post": {
+                "tags": [
+                    "Адреса"
+                ],
+                "summary": "Обновить Адресс",
+                "description": "Обновить Адресс",
+                "operationId": "updateAddress",
+                "parameters": [
+                    {
+                        "name": "api_token",
+                        "in": "header",
+                        "description": "Токен авторизации(api_token)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Апи Токен",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    ""
+                                ],
+                                "properties": {
+                                    "city": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "123"
+                                    },
+                                    "house": {
+                                        "type": "integer",
+                                        "format": "string",
+                                        "example": "321"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "CallBack с данными",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Адреса"
+                ],
+                "summary": "Удалить адресс",
+                "description": "Удалить адресс",
+                "operationId": "deleteAddress",
+                "parameters": [
+                    {
+                        "name": "api_token",
+                        "in": "header",
+                        "description": "Токен авторизации(api_token)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CallBack с данными",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "tags": [
@@ -469,193 +625,6 @@
                 "responses": {
                     "200": {
                         "description": "Вся информация на главной странице"
-                    }
-                }
-            }
-        },
-        "/api/admin/face/": {
-            "get": {
-                "tags": [
-                    "Лицевые блоки"
-                ],
-                "summary": "Все лицевые блоки",
-                "operationId": "viewAll",
-                "responses": {
-                    "200": {
-                        "description": "Все лицевые блоки"
-                    }
-                }
-            }
-        },
-        "/api/admin/face/{id}": {
-            "get": {
-                "tags": [
-                    "Лицевые блоки"
-                ],
-                "summary": "Отдельный лицевой блок",
-                "operationId": "viewSingle",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Айди лицевого блока",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Отдельный лицевой блок"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Лицевые блоки"
-                ],
-                "operationId": "b48d19e8ac535fd14b86f4f1cac91c64",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Айди лицевого блока",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "Апи Токен",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name, content"
-                                ],
-                                "properties": {
-                                    "parentID": {
-                                        "type": "integer",
-                                        "format": "string",
-                                        "example": "1"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "Условия доставки"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "Доставка курьером по г. Алматы"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Returns matching Person Object"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Лицевые блоки"
-                ],
-                "operationId": "bf3dfaa3e554455727d32e33515ae320",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Айди лицевого блока",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns matching Person Object"
-                    }
-                }
-            }
-        },
-        "/api/admin/face": {
-            "post": {
-                "tags": [
-                    "Лицевой блок"
-                ],
-                "summary": "Создать лицевой блок",
-                "description": "Создать лицевой блок",
-                "operationId": "faceCreate",
-                "parameters": [
-                    {
-                        "name": "api_token",
-                        "in": "header",
-                        "description": "Токен авторизации(api_token)",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "description": "Апи Токен",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name, content"
-                                ],
-                                "properties": {
-                                    "parentID": {
-                                        "type": "integer",
-                                        "format": "string",
-                                        "example": "1"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "Условия доставки"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "format": "string",
-                                        "example": "Доставка курьером по г. Алматы"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Массив с: Message - Блок успешно создан, date - блок",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "object",
-                                            "example": []
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Блок успешно создан"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 }
             }

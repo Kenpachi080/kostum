@@ -17,6 +17,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -33,9 +34,8 @@ class AuthController extends Controller implements AuthInterface
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
-            'name' => $request->phone,
+            'name' => $request->fio,
             'phone' => $request->phone,
-            'email' => $request->email,
             'password' => bcrypt($request->password),
             'api_token' => Str::random(60)
         ]);
@@ -44,7 +44,7 @@ class AuthController extends Controller implements AuthInterface
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('name', '=', $request->phone)->first();
+        $user = User::where('phone', '=', $request->phone)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Неверный пароль'
@@ -72,7 +72,25 @@ class AuthController extends Controller implements AuthInterface
 
     public function change(ChangeRequest $request): JsonResponse
     {
-        auth()->user()->update($request->validated());
+        $user = auth()->user();
+        $flag = 0;
+        if ($request->avatar) {
+            $fileName = Storage::put("public/users", $request->avatar);
+            $file = str_replace('public/', '', $fileName);
+            $user->avatar = $file;
+            $flag = 1;
+        }
+
+        if ($request->pass) {
+            $user->password = bcrypt($request->pass);
+            $flag = 1;
+        }
+
+        if ($flag == 1) {
+            $user->save();
+        }
+
+        $user->update($request->validated());
         return response()->json([
             'message' => 'Данные успешно были изменены',
             'user' => new UserResource(Auth::id())
@@ -82,8 +100,7 @@ class AuthController extends Controller implements AuthInterface
     public function forgot(ForgotRequest $request): JsonResponse
     {
         $user = User::query()
-            ->when($request->email, fn($query) => $query->where('email', $request->email))
-            ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
+            ->where('phone', $request->phone)
             ->firstOrFail();
 
         $code = Str::random(6);
@@ -96,8 +113,7 @@ class AuthController extends Controller implements AuthInterface
     public function code(CodeRequest $request): JsonResponse
     {
         $user = User::query()
-            ->when($request->email, fn($query) => $query->where('email', $request->email))
-            ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
+            ->where('phone', $request->phone)
             ->firstOrFail();
 
         if ($user->code == $request->code) {
@@ -110,8 +126,7 @@ class AuthController extends Controller implements AuthInterface
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         $user = User::query()
-            ->when($request->email, fn($query) => $query->where('email', $request->email))
-            ->when($request->phone, fn($query) => $query->where('phone', $request->phone))
+            ->where('phone', $request->phone)
             ->firstOrFail();
 
         if ($user->code != $request->code) {

@@ -24,7 +24,10 @@ class ChangeRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required',
+            'phone' => 'string',
+            'old_phone' => 'string',
+            'fio' => 'string',
+
         ];
     }
 }
