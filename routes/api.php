@@ -35,7 +35,7 @@ Route::group(['prefix' => 'auth', 'middleware' => "api_auth"], function () {
     });
 });
 
-Route::group(['prefix' => 'table'], function () {
+Route::group(['prefix' => 'table', 'middleware' => 'database.auth'], function () {
     /* ОБЯЗАЛЬНО СДЕЛАТЬ FILLABLE * внутри ларки */
     /* СОЗДАЕШЬ ТАБЛИЦЫ, СОЗДАЕШЬ ИХ ТАК ЖЕ В ВОЯДЖЕРЕ ЧТО БЫ ОНИ И ТАМ РАБОТАЛИ */
     Route::get('/', [DatabaseController::class, 'index']); // показать все таблицы
