@@ -27,6 +27,8 @@ class User extends \TCG\Voyager\Models\User
         'code',
         'avatar',
         'old_phone',
+        'orders_sum',
+        'balance'
 
     ];
 

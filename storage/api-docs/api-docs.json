@@ -604,7 +604,7 @@
         "/api/title": {
             "get": {
                 "tags": [
-                    "Общая информация для сайта"
+                    "Общая информация"
                 ],
                 "summary": "Настройки сайта",
                 "operationId": "title",
@@ -618,13 +618,97 @@
         "/api/main": {
             "get": {
                 "tags": [
-                    "Главная страница"
+                    "Общая информация"
                 ],
                 "summary": "Главная страница",
                 "operationId": "main",
                 "responses": {
                     "200": {
                         "description": "Вся информация на главной странице"
+                    }
+                }
+            }
+        },
+        "/api/album": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Альбом",
+                "operationId": "album",
+                "responses": {
+                    "200": {
+                        "description": "Все альбомы"
+                    }
+                }
+            }
+        },
+        "/api/album/{id}": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Альбом по айди",
+                "operationId": "albumid",
+                "responses": {
+                    "200": {
+                        "description": "Один альбом по айди"
+                    }
+                }
+            }
+        },
+        "/api/trend": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Тренды",
+                "operationId": "trend",
+                "responses": {
+                    "200": {
+                        "description": "Вся информация на главной странице"
+                    }
+                }
+            }
+        },
+        "/api/blog": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Блог",
+                "operationId": "blog",
+                "responses": {
+                    "200": {
+                        "description": "Вся информация про блог"
+                    }
+                }
+            }
+        },
+        "/api/blog/{id}": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Блог по айди",
+                "operationId": "blogId",
+                "responses": {
+                    "200": {
+                        "description": "Блог по айди"
+                    }
+                }
+            }
+        },
+        "/api/contact": {
+            "get": {
+                "tags": [
+                    "Общая информация"
+                ],
+                "summary": "Контакты",
+                "operationId": "contact",
+                "responses": {
+                    "200": {
+                        "description": "Контакты"
                     }
                 }
             }

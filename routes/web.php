@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExcelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::group(['prefix' => 'excel'], function () {
+   Route::post('uploadUsers', [ExcelController::class, 'uploadUsers']);
+});
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
