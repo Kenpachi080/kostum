@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\DatabaseController;
 use App\Http\Controllers\AuthController as AuthController;
+use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
 
@@ -34,6 +35,16 @@ Route::group(['prefix' => 'auth', 'middleware' => "api_auth"], function () {
         Route::delete('/{id}', [AddressController::class, 'delete']);
     });
 });
+
+Route::get('title', [IndexController::class, 'title']);
+Route::get('main', [IndexController::class, 'main']);
+Route::get('album', [IndexController::class, 'album']);
+Route::get('album/{id}', [IndexController::class, 'albumId']);
+Route::get('trend', [IndexController::class, 'trend']);
+Route::get('blog', [IndexController::class, 'blog']);
+Route::get('blog/{id}', [IndexController::class, 'blogId']);
+Route::get('contact', [IndexController::class, 'contact']);
+
 
 Route::group(['prefix' => 'table', 'middleware' => 'database.auth'], function () {
     /* ОБЯЗАЛЬНО СДЕЛАТЬ FILLABLE * внутри ларки */
